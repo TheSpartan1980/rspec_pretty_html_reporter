@@ -1,3 +1,12 @@
+## [1.2.0] - 2025-07-02
+
+- Raised minimum Ruby to 3.3.0
+- Replaced deprecated `Rouge::Formatters::HTMLLegacy` with `HTML` and `HTMLTable` formatters
+- Widened runtime dependency constraints (`activesupport <8.0`, `rouge ~> 5.0`)
+- Widened dev dependency constraints (`byebug ~> 13.0`, `rdoc < 9`, `capybara < 4`, `cucumber < 12`, `rspec >= 3.11`)
+- Updated CI workflow actions (checkout, upload-artifact)
+- Registered a custom headless Chrome driver with 1920x1080 viewport to fix cucumber tests on small windows
+
 ## [1.1.5] - 2024-02-15
 
 - Bumped required Ruby version to 3.0.6

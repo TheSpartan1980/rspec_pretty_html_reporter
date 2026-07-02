@@ -12,10 +12,10 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        ruby-version: ['3.0', '3.1', '3.2']
+        ruby-version: ['3.3', '3.4']
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Set up Ruby
         # To automatically get bug fixes and new Ruby versions for ruby/setup-ruby,
         # change this to (see https://github.com/ruby/setup-ruby#versioning):
@@ -28,7 +28,7 @@ jobs:
       - name: "Tar files"
         if: ${{ success() || failure() }}
         run: tar -cvf cucumber-tests-${{ matrix.ruby-version }}.tar cucumber-results.html
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v7
         if: ${{ success() || failure() }}
         with:
           name: cucumber-tests-${{ matrix.ruby-version }}

@@ -64,16 +64,19 @@ class Oopsy
       start_line = line_number - 2
       end_line = line_number + 3
       source = lines[start_line..end_line].join('').sub(lines[line_number - 1].chomp, "--->#{lines[line_number - 1].chomp}")
-      formatter = Rouge::Formatters::HTMLLegacy.new(css_class: 'highlight', line_numbers: true, start_line: start_line + 1)
+      formatter = Rouge::Formatters::HTMLTable.new(
+        Rouge::Formatters::HTML.new,
+        start_line: start_line + 1
+      )
       lexer = Rouge::Lexers::Ruby.new
-      original_format = formatter.format(lexer.lex(source.encode('utf-8')))
+      original_format = %(<div class="highlight"><pre class="highlight"><code>#{formatter.format(lexer.lex(source.encode('utf-8')))}</code></pre></div>)
       original_format.gsub!(/<table class="rouge-table">/, '<table class="rouge-table" style="width:100%">')
     end
   end
 
   def process_message
-    formatter = Rouge::Formatters::HTMLLegacy.new(css_class: 'highlight pl-3')
+    formatter = Rouge::Formatters::HTML.new
     lexer = Rouge::Lexers::Ruby.new
-    formatter.format(lexer.lex(@message))
+    %(<div class="highlight"><pre class="highlight pl-3"><code>#{formatter.format(lexer.lex(@message))}</code></pre></div>)
   end
 end
