@@ -66,9 +66,9 @@ class Example
   end
 
   def set_spec(spec_text)
-    formatter = Rouge::Formatters::HTMLLegacy.new(css_class: 'highlight')
+    formatter = Rouge::Formatters::HTML.new
     lexer = Rouge::Lexers::Gherkin.new
-    @spec = formatter.format(lexer.lex(spec_text.gsub('#->', '')))
+    @spec = %(<div class="highlight"><pre class="highlight"><code>#{formatter.format(lexer.lex(spec_text.gsub('#->', '')))}</code></pre></div>)
   end
 
   def klass(prefix = 'badge-')
