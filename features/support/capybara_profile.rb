@@ -8,6 +8,13 @@ Capybara.configure do |config|
   config.run_server = false
 end
 
+Capybara.register_driver :headless_chrome_large do |app|
+  opts = Selenium::WebDriver::Options.chrome(
+    args: ['--headless', '--window-size=1920,1080']
+  )
+  Capybara::Selenium::Driver.new(app, browser: :chrome, options: opts)
+end
+
 Capybara.default_driver = case ENV['BROWSER']
                           when 'chrome'
                             :selenium_chrome
@@ -16,5 +23,5 @@ Capybara.default_driver = case ENV['BROWSER']
                           when 'headless'
                             :selenium_chrome_headless
                           else
-                            :selenium_chrome_headless
+                            :headless_chrome_large
                           end
