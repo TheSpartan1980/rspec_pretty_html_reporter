@@ -28,7 +28,7 @@ jobs:
       - name: "Tar files"
         if: ${{ success() || failure() }}
         run: tar -cvf cucumber-tests-${{ matrix.ruby-version }}.tar cucumber-results.html
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v7
         if: ${{ success() || failure() }}
         with:
           name: cucumber-tests-${{ matrix.ruby-version }}
