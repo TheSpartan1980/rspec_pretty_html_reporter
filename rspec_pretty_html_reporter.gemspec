@@ -26,7 +26,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency('cucumber', '~> 7.0')
   spec.add_development_dependency('rake', '~> 13.0')
   spec.add_development_dependency('rdoc', '~> 6.4')
-  spec.add_development_dependency('rspec', '~> 3.11.0')
+  spec.add_development_dependency('rspec', '>= 3.11', '< 4.0')
   spec.add_development_dependency('turnip', '>= 2.0.2')
   spec.add_development_dependency('selenium-webdriver', '>= 4.16.0')
 end
