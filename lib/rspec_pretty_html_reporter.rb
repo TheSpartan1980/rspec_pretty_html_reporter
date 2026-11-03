@@ -7,6 +7,7 @@ require 'fileutils'
 require 'erb'
 require 'rspec_pretty_html_reporter/example'
 require 'rspec_pretty_html_reporter/helpers'
+require 'rspec_pretty_html_reporter/parallel'
 
 I18n.enforce_available_locales = false
 
@@ -23,10 +24,9 @@ class RspecPrettyHtmlReporter < RSpec::Core::Formatters::BaseFormatter
                                    :example_group_finished
 
   def initialize(_io_standard_out)
-    create_reports_dir
+    prepare_reports_dir
     create_screenshots_dir
     create_screenrecords_dir
-    copy_resources
     @all_groups = {}
     @group_level = 0
     @theme = Helpers.theme(ENV['THEME'])
@@ -68,7 +68,7 @@ class RspecPrettyHtmlReporter < RSpec::Core::Formatters::BaseFormatter
     @group_level -= 1
 
     if @group_level.zero?
-      @filename = Helpers.rename_duplicate_filename("#{REPORT_PATH}/#{notification.group.description.parameterize}.html")
+      @filename = reserve_filename("#{REPORT_PATH}/#{notification.group.description.parameterize}.html")
 
       File.open(@filename, 'w') do |f|
         @passed = @group_example_success_count
@@ -98,7 +98,8 @@ class RspecPrettyHtmlReporter < RSpec::Core::Formatters::BaseFormatter
                   else
                     (statuses.include?('passed') ? 'passed' : 'pending')
                   end
-        @spec_description = Helpers.rename_duplicate_description(@all_groups, notification.group.description.parameterize)
+        # The overview links to the report file, so the file name is the key. It stays unique across parallel workers.
+        @spec_description = File.basename(@filename, '.html')
         @all_groups[@spec_description] = {
           group: notification.group.description,
           examples: @examples.size,
@@ -118,9 +119,15 @@ class RspecPrettyHtmlReporter < RSpec::Core::Formatters::BaseFormatter
     end
   end
 
-  def close(notification)
+  def close(_notification)
+    RspecPrettyHtmlParallel.synchronize(REPORT_PATH) { write_overview }
+  end
+
+  private
+
+  def write_overview
     File.open("#{REPORT_PATH}/overview.html", 'w') do |f|
-      @overview = @all_groups
+      @overview = RspecPrettyHtmlParallel.worker? ? RspecPrettyHtmlParallel.merge_groups(REPORT_PATH, @all_groups) : @all_groups
 
       @passed = @overview.values.map { |g| g[:passed].size }.inject(0) { |sum, i| sum + i }
       @failed = @overview.values.map { |g| g[:failed].size }.inject(0) { |sum, i| sum + i }
@@ -144,11 +151,25 @@ class RspecPrettyHtmlReporter < RSpec::Core::Formatters::BaseFormatter
     end
   end
 
-  private
+  # A parallel worker empties the report directory only when it is the first worker of a new run.
+  def prepare_reports_dir
+    RspecPrettyHtmlParallel.synchronize(REPORT_PATH) do
+      create_reports_dir unless RspecPrettyHtmlParallel.worker? && RspecPrettyHtmlParallel.current_run?(REPORT_PATH)
+    end
+  end
 
   def create_reports_dir
     FileUtils.rm_rf(REPORT_PATH) if File.exist?(REPORT_PATH)
     FileUtils.mkpath(REPORT_PATH)
+    copy_resources
+    RspecPrettyHtmlParallel.mark_run(REPORT_PATH) if RspecPrettyHtmlParallel.worker?
+  end
+
+  # Picks a free file name and creates the file, so a parallel worker cannot pick the same name.
+  def reserve_filename(filename)
+    RspecPrettyHtmlParallel.synchronize(REPORT_PATH) do
+      Helpers.rename_duplicate_filename(filename).tap { |name| FileUtils.touch(name) }
+    end
   end
 
   def create_screenshots_dir
