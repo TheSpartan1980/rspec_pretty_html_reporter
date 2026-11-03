@@ -36,6 +36,19 @@ REPORT_PATH=reports/$(date +%s) bundle exec rspec --format RspecPrettyHtmlReport
 
 This will create the reports in the `reports` directory.
 
+## Parallel tests
+
+The reporter supports [parallel_tests](https://github.com/grosser/parallel_tests). Give every worker the same
+`REPORT_PATH`, because the default path holds the start time of each process:
+
+```bash
+REPORT_PATH=reports/latest bundle exec parallel_rspec -- --format RspecPrettyHtmlReporter --
+```
+
+The first worker of a run empties the report directory. Every worker adds the reports of its spec groups, and the
+last worker to finish writes the overview of all the groups. The workers use a `<REPORT_PATH>.lock` file next to the
+report directory.
+
 ## Usage
 
 Images and videos can be embed by adding their path into example's metadata. For an example of how to do this, please
