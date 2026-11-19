@@ -1,3 +1,7 @@
+## [Unreleased]
+
+- Widened runtime dependency constraints (`activesupport < 9.0`, `bundler >= 2.2, < 5`) to support Rails 8 and Bundler 4
+
 ## [1.2.0] - 2025-07-02
 
 - Raised minimum Ruby to 3.3.0
