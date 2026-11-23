@@ -11,14 +11,18 @@ module TestHelper
            'spec/turnip.feature'
   }.freeze
 
-  # Runs two workers of one parallel_tests run together. The report directory holds a
-  # file from an earlier run, which the first worker of the new run must remove.
+  # Runs two workers of one parallel_tests run together. With seed, the report directory
+  # holds a file from an earlier run, which the first worker of the new run must remove.
+  # Without it the directory is absent, so the workers must create it.
   # The example specs fail on purpose, so --failure-exit-code 0 makes a worker exit 0
   # unless it crashes or cannot load a spec.
-  def self.generate_parallel_report(dir_name)
-    FileUtils.mkpath(File.join(dir_name, '.parallel'))
-    File.write(File.join(dir_name, '.parallel', 'run'), 'an earlier run')
-    File.write(File.join(dir_name, 'stale.html'), '')
+  def self.generate_parallel_report(dir_name, seed: true)
+    FileUtils.rm_rf(dir_name)
+    if seed
+      FileUtils.mkpath(File.join(dir_name, '.parallel'))
+      File.write(File.join(dir_name, '.parallel', 'run'), 'an earlier run')
+      File.write(File.join(dir_name, 'stale.html'), '')
+    end
 
     PARALLEL_WORKERS.map do |number, files|
       env = { 'REPORT_PATH' => dir_name, 'TEST_ENV_NUMBER' => number, 'PARALLEL_TEST_GROUPS' => '2',

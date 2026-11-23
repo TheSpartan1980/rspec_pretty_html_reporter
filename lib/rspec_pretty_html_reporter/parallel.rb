@@ -30,6 +30,9 @@ module RspecPrettyHtmlParallel
   def self.synchronize(report_path)
     return yield unless worker?
 
+    # A trailing separator would put the lock file inside the report directory,
+    # which the first worker of a run deletes.
+    report_path = File.expand_path(report_path)
     FileUtils.mkpath(File.dirname(report_path))
     File.open("#{report_path}.lock", File::RDWR | File::CREAT) do |lock|
       lock.flock(File::LOCK_EX)
