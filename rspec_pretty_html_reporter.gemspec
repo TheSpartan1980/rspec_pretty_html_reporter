@@ -5,7 +5,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 Gem::Specification.new do |spec|
   spec.name          = 'rspec_pretty_html_reporter'
-  spec.version       = '1.2.0'
+  spec.version       = '1.3.0'
   spec.authors       = ['Carlos Gutierrez']
   spec.email         = ['testing@spartan-testsolutions.co.uk']
   spec.summary       = 'RSpec Pretty HTML Reporter'
@@ -16,8 +16,8 @@ Gem::Specification.new do |spec|
   spec.required_ruby_version = '>= 3.3.0'
   spec.files = Dir['{lib,resources,templates}/**/*', 'README*', 'LICENSE*'] & `git ls-files -z`.split("\0")
 
-  spec.add_runtime_dependency('activesupport', '>= 4.1.4', '<8.0')
-  spec.add_runtime_dependency('bundler', '~> 2.2')
+  spec.add_runtime_dependency('activesupport', '>= 4.1.4', '< 9.0')
+  spec.add_runtime_dependency('bundler', '>= 2.2', '< 5')
   spec.add_runtime_dependency('rouge', '~> 5.0')
   spec.add_runtime_dependency('rspec-core', %w[>=3.4 <4.0])
 
