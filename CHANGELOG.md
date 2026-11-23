@@ -1,3 +1,7 @@
+## [Unreleased]
+
+- Added support for parallel_tests: the workers of one run share the report directory and the overview lists the groups of all the workers
+
 ## [1.2.0] - 2025-07-02
 
 - Raised minimum Ruby to 3.3.0
