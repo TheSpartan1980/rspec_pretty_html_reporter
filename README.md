@@ -49,6 +49,8 @@ The first worker of a run empties the report directory. Every worker adds the re
 last worker to finish writes the overview of all the groups. The workers use a `<REPORT_PATH>.lock` file next to the
 report directory.
 
+A worker saves its groups when it finishes. If a worker crashes, the overview does not list its groups.
+
 ## Usage
 
 Images and videos can be embed by adding their path into example's metadata. For an example of how to do this, please
