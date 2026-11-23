@@ -5,6 +5,7 @@ def parallel_overview
 end
 
 Given('a parallel report has been generated') do
+  TestHelper.generate_parallel_report(Fig.parallel_report_path)
 end
 
 Then('the parallel overview has {int} links to other pages') do |number|
