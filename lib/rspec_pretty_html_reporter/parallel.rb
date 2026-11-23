@@ -58,15 +58,21 @@ module RspecPrettyHtmlParallel
 
   ##
   # Saves the groups of this worker, then returns the groups of all the workers that have finished.
+  # A worker that dies while it writes leaves only a temporary file, which the merge ignores.
+  # The merge also skips a groups file that does not parse, so one bad file costs only its own groups.
   # @param [String] report_path The report directory
   # @param [Hash] groups        The groups of this worker, by the name of their report file
   # @return [Hash]              The groups of all the finished workers, in worker order
   ##
   def self.merge_groups(report_path, groups)
-    File.write(groups_file(report_path, worker_number), JSON.generate(groups))
+    path = groups_file(report_path, worker_number)
+    File.write("#{path}.tmp", JSON.generate(groups))
+    File.rename("#{path}.tmp", path)
 
-    Dir[groups_file(report_path, '*')].sort_by { |path| path[/(\d+)\.json\z/, 1].to_i }.each_with_object({}) do |path, all|
-      JSON.parse(File.read(path), symbolize_names: true).each { |name, group| all[name.to_s] = group }
+    Dir[groups_file(report_path, '*')].sort_by { |file| file[/(\d+)\.json\z/, 1].to_i }.each_with_object({}) do |file, all|
+      JSON.parse(File.read(file), symbolize_names: true).each { |name, group| all[name.to_s] = group }
+    rescue JSON::ParserError
+      next
     end
   end
 
