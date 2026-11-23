@@ -1,7 +1,12 @@
-## [Unreleased]
+## [1.3.0] - 2026-11-23
 
-- Added support for parallel_tests: the workers of one run share the report directory and the overview lists the groups of all the workers
-- Widened runtime dependency constraints (`activesupport < 9.0`, `bundler >= 2.2, < 5`) to support Rails 8 and Bundler 4
+- Added support for `parallel_tests`: the workers of one run share one report directory, and the overview lists the groups from every worker
+- Fixed the browser console errors on the report pages: Tether is now loaded from the bundled `resources/tether-1.3.3-dist` folder, before Bootstrap
+- The dependency constraints were widened so the gem installs in Rails 8 apps (`activesupport < 9.0`) and with Bundler 4 (`bundler >= 2.2, < 5`)
+- Added a test that every resource the report pages reference exists
+- CI now runs on every pull request, and on pushes to `main`; pull requests targeting `main` previously had no checks
+
+Thanks to [@anthony0030](https://github.com/anthony0030) for the parallel_tests support, the Tether fix, and the Rails 8 and Bundler 4 support.
 
 ## [1.2.0] - 2025-07-02
 
