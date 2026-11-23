@@ -14,3 +14,4 @@ example_test_failed: ['1', 'Example Test', '0', '1', '0', 'failed']
 example_test_passed: ['1', 'Example Test', '0', '0', '1', 'passed']
 example_test_pending: ['1', 'Example Test', '1', '0', '0', 'pending']
 example_column_names: ['#', 'Example', 'Duration', 'Status']
+parallel_report_path: reports/cg-parallel

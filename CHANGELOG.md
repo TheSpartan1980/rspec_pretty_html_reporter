@@ -1,5 +1,6 @@
 ## [Unreleased]
 
+- Added support for parallel_tests: the workers of one run share the report directory and the overview lists the groups of all the workers
 - Widened runtime dependency constraints (`activesupport < 9.0`, `bundler >= 2.2, < 5`) to support Rails 8 and Bundler 4
 
 ## [1.2.0] - 2025-07-02
